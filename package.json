@@ -1,0 +1,38 @@
+{
+  "name": "solid-todomvc",
+  "version": "0.1.1",
+  "description": "Solid implementation of TodoMVC",
+  "scripts": {
+    "dev": "webpack -w",
+    "prod": "webpack -p"
+  },
+  "keywords": [
+    "solid",
+    "s.js",
+    "javascript",
+    "framework",
+    "todomvc"
+  ],
+  "author": "Ryan Carniato",
+  "license": "MIT",
+  "homepage": "https://github.com/ryansolid/solid-todomvc",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ryansolid/solid-todomvc.git"
+  },
+  "private": true,
+  "dependencies": {
+    "s-js": "^0.4.9",
+    "solid-js": "^0.1.1",
+    "todomvc-app-css": "^2.1.2",
+    "todomvc-common": "^1.0.5"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "babel-loader": "^8.0.2",
+    "babel-plugin-jsx-dom-expressions": "^0.1.2",
+    "webpack": "^4.19.1",
+    "webpack-cli": "^3.1.0"
+  }
+}
