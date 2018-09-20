@@ -26,12 +26,8 @@ export default () => {
   const state = new State({ counter: 0, edittingTodoId: null, todos: [] });
   setupPersistence(state);
   state.select({
-    completedCount() {
-      return state.todos.filter(todo => todo.completed).length;
-    },
-    remainingCount() {
-      return state.todos.length - (state.completedCount || 0)
-    },
+    completedCount: () => state.todos.filter(todo => todo.completed).length,
+    remainingCount: () => state.todos.length - (state.completedCount || 0),
     showMode: pipe(
       fromEvent(window, 'hashchange', 1),
       map(() => location.hash.slice(2) || 'all')
