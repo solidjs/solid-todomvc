@@ -38,7 +38,7 @@ const TodoList = props => {
       id='toggle-all'
       class='toggle-all'
       type='checkbox'
-      checked={!state.remainingCount}
+      checked={(!state.remainingCount)}
       onchange={
         ({target: {checked}}) => toggleAll(checked)
       }
@@ -60,18 +60,18 @@ const TodoItem = ({ state, editTodo, removeTodo, todo }) => {
     state.set({edittingTodoId: null});
   }
 
-  return <li class='todo' classList={{completed: todo.completed, editing: todo.id === state.edittingTodoId}}>
+  return <li class='todo' classList={({completed: todo.completed, editing: todo.id === state.edittingTodoId})}>
     <div class='view'>
       <input
-        class='toggle' type='checkbox' checked={todo.completed}
+        class='toggle' type='checkbox' checked={(todo.completed)}
         onchange={
           ({target: {checked}}) => editTodo({id: todo.id, completed: checked})
         }
       />
-      <label ondblclick={() => state.set({edittingTodoId: todo.id}) }>{todo.title}</label>
+      <label ondblclick={() => state.set({edittingTodoId: todo.id}) }>{(todo.title)}</label>
       <button class='destroy' onclick={() => removeTodo(todo.id) } />
     </div>
-    {
+    {(
       (todo.id === state.edittingTodoId) &&
         <input
           class='edit'
@@ -82,26 +82,26 @@ const TodoItem = ({ state, editTodo, removeTodo, todo }) => {
             else if (e.keyCode === ESCAPE_KEY) state.set({edittingTodoId: null})
           }}
         />
-    }
+    )}
   </li>
 }
 
 const TodoFooter = ({ state, clearCompleted }) =>
   <footer class='footer'>
     <span class='todo-count'>
-      <strong>{state.remainingCount}</strong>
-      {state.remainingCount === 1 ? ' item' : ' items'} left
+      <strong>{(state.remainingCount)}</strong>
+      {(state.remainingCount === 1 ? ' item' : ' items')} left
     </span>
     <ul class='filters'>
-      <li><a href='#/' classList={{selected: state.showMode === 'all'}}>All</a></li>
+      <li><a href='#/' classList={({selected: state.showMode === 'all'})}>All</a></li>
       <span />
-      <li><a href='#/active' classList={{selected: state.showMode === 'active'}}>Active</a></li>
+      <li><a href='#/active' classList={({selected: state.showMode === 'active'})}>Active</a></li>
       <span />
-      <li><a href='#/completed' classList={{selected: state.showMode === 'completed'}}>Completed</a></li>
+      <li><a href='#/completed' classList={({selected: state.showMode === 'completed'})}>Completed</a></li>
     </ul>
     {
       when(() =>
-        <button class='clear-completed' onclick={() => clearCompleted() }>Clear completed</button>
+        <button class='clear-completed' onclick={(clearCompleted)}>Clear completed</button>
       )(() => state.completedCount > 0)
     }
   </footer>

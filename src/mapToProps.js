@@ -1,5 +1,4 @@
-import { State, pipe, map } from 'solid-js';
-import S from 's-js'
+import { State, pipe, map, cleanup, data, effect } from 'solid-js';
 
 const LOCAL_STORAGE_KEY = 'todos-solid';
 
@@ -9,16 +8,16 @@ function setupPersistence(state) {
   if (stored) state.replace(JSON.parse(stored));
 
   // JSON.stringify creates deps on every iterable field
-  S.effect(() => {
+  effect(() => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state));
   });
 }
 
 // event wrapper
 function fromEvent(el, eventName, seed) {
-  const s = S.data(seed)
+  const s = data(seed)
   el.addEventListener(eventName, s)
-  S.cleanup(() => el.removeEventListener(eventName, s))
+  cleanup(() => el.removeEventListener(eventName, s))
   return s
 }
 
