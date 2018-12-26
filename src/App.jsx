@@ -52,12 +52,12 @@ const TodoList = props => {
   </section>
 }
 
-const TodoItem = ({ state, editTodo, removeTodo, todo }) => {
+const TodoItem = ({ state, editTodo, removeTodo, setCurrent, todo }) => {
   function onSave({target: {value}}) {
     let title;
     if (!(state.edittingTodoId === todo.id && (title = value.trim()))) return;
     editTodo({id: todo.id, title});
-    state.set({edittingTodoId: null});
+    setCurrent();
   }
 
   return <li class='todo' classList={({completed: todo.completed, editing: todo.id === state.edittingTodoId})}>
@@ -68,7 +68,7 @@ const TodoItem = ({ state, editTodo, removeTodo, todo }) => {
           ({target: {checked}}) => editTodo({id: todo.id, completed: checked})
         }
       />
-      <label ondblclick={() => state.set({edittingTodoId: todo.id}) }>{(todo.title)}</label>
+      <label ondblclick={() => setCurrent(todo.id) }>{(todo.title)}</label>
       <button class='destroy' onclick={() => removeTodo(todo.id) } />
     </div>
     {(
@@ -78,8 +78,8 @@ const TodoItem = ({ state, editTodo, removeTodo, todo }) => {
           value={todo.title}
           onblur={onSave}
           onkeyup={e => {
-            if (e.keyCode === ENTER_KEY) onSave(e)
-            else if (e.keyCode === ESCAPE_KEY) state.set({edittingTodoId: null})
+            if (e.keyCode === ENTER_KEY) onSave(e);
+            else if (e.keyCode === ESCAPE_KEY) setCurrent();
           }}
         />
     )}
