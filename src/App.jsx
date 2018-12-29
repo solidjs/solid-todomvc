@@ -6,8 +6,8 @@ const ESCAPE_KEY = 27, ENTER_KEY = 13;
 const TodoApp = props =>
   <section class='todoapp'>
     <TodoHeader {...props} />
-    {when(() => <TodoList {...props} />)(() => props.state.todos.length > 0)}
-    {when(() => <TodoFooter {...props} />)(() => props.state.todos.length > 0)}
+    <$ when={props.state.todos.length > 0}>{() => <TodoList {...props}/>}</$>
+    <$ when={props.state.todos.length > 0}>{() => <TodoFooter {...props}/>}</$>
   </section>
 
 const TodoHeader = ({ addTodo }) =>
@@ -44,11 +44,11 @@ const TodoList = props => {
       }
     />
     <label for='toggle-all' />
-    <ul class='todo-list'>{
-      each(todo =>
-        <TodoItem {...props} todo={todo} />
-      )(() => filterList(state.todos))
-    }</ul>
+    <ul class='todo-list'>
+      <$ each={filterList(state.todos)}>{
+        todo => <TodoItem {...props} todo={todo}/>
+      }</$>
+    </ul>
   </section>
 }
 
@@ -99,11 +99,9 @@ const TodoFooter = ({ state, clearCompleted }) =>
       <span />
       <li><a href='#/completed' classList={({selected: state.showMode === 'completed'})}>Completed</a></li>
     </ul>
-    {
-      when(() =>
-        <button class='clear-completed' onclick={(clearCompleted)}>Clear completed</button>
-      )(() => state.completedCount > 0)
-    }
+    <$ when={ state.completedCount > 0 }>{() =>
+      <button class='clear-completed' onclick={clearCompleted}>Clear completed</button>
+    }</$>
   </footer>
 
 export default TodoApp;
