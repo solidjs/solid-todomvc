@@ -1,9 +1,9 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.js',
-  mode: 'development',
-  devtool: 'cheap-eval-source-map',
+  entry: './src/index.jsx',
+  mode: 'production',
+  //devtool: 'cheap-eval-source-map',
   target: 'web',
 	output: {
     filename: "bundle.js",
