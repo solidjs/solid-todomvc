@@ -18,7 +18,7 @@ function useLocalState(value) {
 const TodoApp = () => {
   const [state, setState] = useLocalState({counter: 0, edittingTodoId: null, todos: []}),
     addTodo = ({title}) => setState(
-      ['todos', t => [{title, id, completed: false}, ...t]],
+      ['todos', t => [{title, id: state.counter, completed: false}, ...t]],
       ['counter', c => c + 1]
     ),
     removeTodo = todoId => setState('todos', t => t.filter(item => item.id !== todoId)),
@@ -38,12 +38,10 @@ const TodoApp = () => {
 
   return <section class='todoapp'>
     <TodoHeader addTodo={addTodo} />
-    <$ when={state.todos.length > 0}>{() =>
+    <$ when={state.todos.length > 0}>
       <TodoList {...{state, toggleAll, editTodo, removeTodo, setCurrent}}/>
-    }</$>
-    <$ when={state.todos.length > 0}>{() =>
       <TodoFooter {...{state, clearCompleted}}/>
-    }</$>
+    </$>
   </section>
 }
 
@@ -131,9 +129,9 @@ const TodoFooter = ({ state, clearCompleted }) =>
       <li><a href='#/active' classList={({selected: state.showMode === 'active'})}>Active</a></li>
       <li><a href='#/completed' classList={({selected: state.showMode === 'completed'})}>Completed</a></li>
     </ul>
-    <$ when={ state.completedCount > 0 }>{() =>
+    <$ when={ state.completedCount > 0 }>
       <button class='clear-completed' onclick={clearCompleted}>Clear completed</button>
-    }</$>
+    </$>
   </footer>
 
 root(() => document.body.appendChild(<TodoApp />));
