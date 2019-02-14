@@ -1,5 +1,5 @@
 import { root, useState, useEffect, useCleanup } from 'solid-js';
-import { r } from 'solid-js/dom';
+import { r, selectWhen } from 'solid-js/dom';
 
 const ESCAPE_KEY = 27,
   ENTER_KEY = 13,
@@ -78,7 +78,7 @@ const TodoList = props => {
     />
     <label for='toggle-all' />
     <ul class='todo-list'>
-      <$ each={filterList(state.todos)}>{
+      <$ each={filterList(state.todos)} afterRender={selectWhen(() => state.edittingTodoId, 'editing')}>{
         todo => <TodoItem {...props} todo={todo}/>
       }</$>
     </ul>
@@ -93,7 +93,7 @@ const TodoItem = ({ state, todo, editTodo, removeTodo, setCurrent }) => {
     setCurrent();
   }
 
-  return <li class='todo' classList={({completed: todo.completed, editing: todo.id === state.edittingTodoId})}>
+  return <li class='todo' model={todo.id} classList={({completed: todo.completed})}>
     <div class='view'>
       <input
         class='toggle'
@@ -104,7 +104,7 @@ const TodoItem = ({ state, todo, editTodo, removeTodo, setCurrent }) => {
       <label ondblclick={() => setCurrent(todo.id) }>{(todo.title)}</label>
       <button class='destroy' onclick={() => removeTodo(todo.id) } />
     </div>
-    {((todo.id === state.edittingTodoId) &&
+    <$ when={todo.id === state.edittingTodoId}>
       <input
         class='edit'
         value={todo.title}
@@ -114,7 +114,7 @@ const TodoItem = ({ state, todo, editTodo, removeTodo, setCurrent }) => {
           else if (e.keyCode === ESCAPE_KEY) setCurrent();
         }}
       />
-    )}
+    </$>
   </li>
 }
 
