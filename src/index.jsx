@@ -1,22 +1,25 @@
-import { root, useState, useEffect, useCleanup } from 'solid-js';
+import { createRoot, createState, createEffect, onCleanup } from 'solid-js';
 import { r, selectWhen } from 'solid-js/dom';
 
 const ESCAPE_KEY = 27,
   ENTER_KEY = 13,
   LOCAL_STORAGE_KEY = 'todos-solid';
 
-function useLocalState(value) {
+function createLocalState(value) {
   // load stored todos on init
   const stored = localStorage.getItem(LOCAL_STORAGE_KEY),
-    [state, setState] = useState(stored ? JSON.parse(stored) : value);
+    [state, setState] = createState(stored ? JSON.parse(stored) : value);
 
   // JSON.stringify creates deps on every iterable field
-  useEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state)));
+  createEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state)));
   return [state, setState];
 }
 
+// custom directive to give focus
+function autofocus(node) { Promise.resolve().then(() => node.focus()); }
+
 const TodoApp = () => {
-  const [state, setState] = useLocalState({counter: 0, edittingTodoId: null, todos: []}),
+  const [state, setState] = createLocalState({counter: 0, edittingTodoId: null, todos: []}),
     addTodo = ({title}) => setState(
       ['todos', t => [{title, id: state.counter, completed: false}, ...t]],
       ['counter', c => c + 1]
@@ -28,13 +31,13 @@ const TodoApp = () => {
     setCurrent = todoId => setState('edittingTodoId', todoId),
     locationHandler = () => setState('showMode', location.hash.slice(2) || 'all');
 
-  useEffect(() => {
+  createEffect(() => {
     const completedCount = state.todos.filter(todo => todo.completed).length;
     setState({ completedCount, remainingCount: state.todos.length - completedCount });
   });
 
   window.addEventListener('hashchange', locationHandler);
-  useCleanup(() => window.removeEventListener('hashchange', locationHandler));
+  onCleanup(() => window.removeEventListener('hashchange', locationHandler));
 
   return <section class='todoapp'>
     <TodoHeader addTodo={addTodo} />
@@ -60,13 +63,25 @@ const TodoHeader = ({ addTodo }) =>
     />
   </header>
 
-const TodoList = props => {
-  const { state, toggleAll } = props,
-    filterList = todos => {
+const TodoList = ({ state, editTodo, setCurrent, removeTodo, toggleAll }) => {
+  const filterList = todos => {
       if (state.showMode === 'active') return todos.filter(todo => !todo.completed);
       else if (state.showMode === 'completed') return todos.filter(todo => todo.completed);
       else return todos
-    }
+    },
+    save = ({target: {value}}, todoId) => {
+      let title;
+      if (!(state.edittingTodoId === todoId && (title = value.trim()))) return;
+      editTodo({id: todoId, title});
+      setCurrent();
+    },
+    check = ({target: {checked}}, todoId) => editTodo({id: todoId, completed: checked}),
+    edit = (e, todoId) => setCurrent(todoId),
+    remove = (e, todoId) => removeTodo(todoId),
+    doneEditting = (e, todoId) => {
+      if (e.keyCode === ENTER_KEY) save(e, todoId);
+      else if (e.keyCode === ESCAPE_KEY) setCurrent();
+    };
 
   return <section class='main'>
     <input
@@ -78,45 +93,38 @@ const TodoList = props => {
     />
     <label for='toggle-all' />
     <ul class='todo-list'>
-      <$ each={filterList(state.todos)} afterRender={selectWhen(() => state.edittingTodoId, 'editing')}>{
-        todo => <TodoItem {...props} todo={todo}/>
+      <$
+        each={filterList(state.todos)}
+        afterRender={selectWhen(() => state.edittingTodoId, 'editing')}
+      >{
+        todo => <TodoItem {...{state, todo, check, edit, remove, doneEditting, save}} />
       }</$>
     </ul>
   </section>
 }
 
-const TodoItem = ({ state, todo, editTodo, removeTodo, setCurrent }) => {
-  const onSave = ({target: {value}}) => {
-    let title;
-    if (!(state.edittingTodoId === todo.id && (title = value.trim()))) return;
-    editTodo({id: todo.id, title});
-    setCurrent();
-  }
-
-  return <li class='todo' model={todo.id} classList={({completed: todo.completed})}>
+const TodoItem = ({ state, todo, check, edit, remove, save, doneEditting }) =>
+  <li class='todo' model={todo.id} classList={({completed: todo.completed})}>
     <div class='view'>
       <input
         class='toggle'
         type='checkbox'
         checked={(todo.completed)}
-        onchange={({target: {checked}}) => editTodo({id: todo.id, completed: checked})}
+        onChange={check}
       />
-      <label ondblclick={() => setCurrent(todo.id) }>{(todo.title)}</label>
-      <button class='destroy' onclick={() => removeTodo(todo.id) } />
+      <label onDblClick={edit}>{(todo.title)}</label>
+      <button class='destroy' onClick={remove} />
     </div>
     <$ when={todo.id === state.edittingTodoId}>
       <input
         class='edit'
         value={todo.title}
-        onblur={onSave}
-        onkeyup={e => {
-          if (e.keyCode === ENTER_KEY) onSave(e);
-          else if (e.keyCode === ESCAPE_KEY) setCurrent();
-        }}
+        $autofocus={true}
+        onFocusOut={save}
+        onKeyUp={doneEditting}
       />
     </$>
   </li>
-}
 
 const TodoFooter = ({ state, clearCompleted }) =>
   <footer class='footer'>
@@ -134,4 +142,4 @@ const TodoFooter = ({ state, clearCompleted }) =>
     </$>
   </footer>
 
-root(() => document.body.appendChild(<TodoApp />));
+createRoot(() => document.body.appendChild(<TodoApp />));

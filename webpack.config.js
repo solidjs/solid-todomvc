@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports = {
   entry: './src/index.jsx',
-  mode: 'production',
+  mode: 'development',
   //devtool: 'cheap-eval-source-map',
   target: 'web',
 	output: {
