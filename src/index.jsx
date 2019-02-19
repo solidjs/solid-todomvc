@@ -1,7 +1,7 @@
 import { createRoot, onCleanup, createState } from 'solid-js';
 import { r, selectWhen } from 'solid-js/dom';
 
-import createTodosStore from './createStore';
+import createTodosStore from './createTodosStore';
 
 const ESCAPE_KEY = 27,
   ENTER_KEY = 13;
