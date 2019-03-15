@@ -22,7 +22,7 @@
   "private": true,
   "dependencies": {
     "solid-js": "~0.4.1",
-    "babel-plugin-jsx-dom-expressions": "~0.4.4",
+    "babel-plugin-jsx-dom-expressions": "~0.4.9",
     "todomvc-app-css": "^2.1.2",
     "todomvc-common": "^1.0.5"
   },
