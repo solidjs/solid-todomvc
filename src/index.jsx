@@ -121,4 +121,4 @@ const TodoFooter = ({ store, clearCompleted }) =>
     </$>
   </footer>
 
-createRoot(() => document.body.appendChild(<TodoApp />));
+createRoot(() => document.body.insertBefore(<TodoApp />, document.body.firstChild));
