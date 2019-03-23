@@ -13,7 +13,7 @@ function createLocalState(value) {
 }
 
 export default function createTodosStore() {
-  const [state, setState] = createLocalState({counter: 0, todos: [], showMode: 'all'});
+  const [state, setState] = createLocalState({counter: 1, todos: [], showMode: 'all'});
   createEffect(() => {
     const completedCount = state.todos.filter(todo => todo.completed).length;
     setState({ completedCount, remainingCount: state.todos.length - completedCount });
