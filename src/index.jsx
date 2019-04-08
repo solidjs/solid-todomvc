@@ -6,9 +6,6 @@ import createTodosStore from './createTodosStore';
 const ESCAPE_KEY = 27,
   ENTER_KEY = 13;
 
-// custom directive to give focus
-function autofocus(node) { Promise.resolve().then(() => node.focus()); }
-
 const TodoApp = () => {
   const [store, {addTodo, toggleAll, editTodo, removeTodo, clearCompleted, setVisibility}] = createTodosStore(),
     locationHandler = () => setVisibility(location.hash.slice(2) || 'all');
@@ -94,11 +91,10 @@ const TodoItem = ({ todo, isEditing, toggle, edit, remove, save, doneEditing }) 
       <label onDblClick={edit}>{(todo.title)}</label>
       <button class='destroy' onClick={remove} />
     </div>
-    <$ when={isEditing(todo.id)}>
+    <$ when={isEditing(todo.id)} afterRender={node => node && node.focus()}>
       <input
         class='edit'
         value={todo.title}
-        $autofocus={true}
         onFocusOut={save}
         onKeyUp={doneEditing}
       />
