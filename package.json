@@ -1,6 +1,6 @@
 {
   "name": "solid-todomvc",
-  "version": "0.4.2",
+  "version": "0.4.5",
   "description": "Solid implementation of TodoMVC",
   "scripts": {
     "dev": "webpack -w",
@@ -21,8 +21,8 @@
   },
   "private": true,
   "dependencies": {
-    "solid-js": "~0.4.2",
-    "babel-plugin-jsx-dom-expressions": "~0.5.0"
+    "solid-js": "~0.4.5",
+    "babel-plugin-jsx-dom-expressions": "~0.6.0"
   },
   "devDependencies": {
     "@babel/core": "^7.1.0",
