@@ -1,6 +1,4 @@
-import { createRoot, onCleanup, createState } from 'solid-js';
-import { r, selectWhen } from 'solid-js/dom';
-
+import { createRoot, onCleanup, createState, selectWhen } from 'solid-js';
 import createTodosStore from './createTodosStore';
 
 const ESCAPE_KEY = 27,

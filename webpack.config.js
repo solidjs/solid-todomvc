@@ -19,7 +19,7 @@ module.exports = {
       use: {
         loader: 'babel-loader',
         options: {
-          plugins: ['jsx-dom-expressions']
+          plugins: [['jsx-dom-expressions', {moduleName: 'solid-js/dom'}]]
         }
       }
     }]
