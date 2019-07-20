@@ -1,8 +1,11 @@
-import { createRoot, onCleanup, createState, selectWhen } from 'solid-js';
+import { onCleanup, createState, selectWhen } from 'solid-js';
+import { render } from 'solid-js/dom';
 import createTodosStore from './createTodosStore';
 
 const ESCAPE_KEY = 27,
   ENTER_KEY = 13;
+
+const setFocus = (el) => Promise.resolve().then(() => el.focus());
 
 const TodoApp = () => {
   const [store, {addTodo, toggleAll, editTodo, removeTodo, clearCompleted, setVisibility}] = createTodosStore(),
@@ -13,10 +16,10 @@ const TodoApp = () => {
 
   return <section class='todoapp'>
     <TodoHeader addTodo={addTodo} />
-    <$ when={store.todos.length > 0}>
+    <Show when={(store.todos.length > 0)}>
       <TodoList {...{store, toggleAll, editTodo, removeTodo}}/>
       <TodoFooter store={store} clearCompleted={clearCompleted} />
-    </$>
+    </Show>
   </section>
 }
 
@@ -68,11 +71,11 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
     />
     <label for='toggle-all' />
     <ul class='todo-list'>
-      <$ each={filterList(store.todos)}
-        afterRender={selectWhen(() => state.editingTodoId, 'editing')}
+      <For each={(filterList(store.todos))}
+        transform={selectWhen(() => state.editingTodoId, 'editing')}
       >{
         todo => <TodoItem {...{todo, isEditing, toggle, edit, remove, doneEditing, save}} />
-      }</$>
+      }</For>
     </ul>
   </section>
 }
@@ -89,14 +92,15 @@ const TodoItem = ({ todo, isEditing, toggle, edit, remove, save, doneEditing }) 
       <label onDblClick={edit}>{(todo.title)}</label>
       <button class='destroy' onClick={remove} />
     </div>
-    <$ when={isEditing(todo.id)} afterRender={node => node && node.focus()}>
+    <Show when={(isEditing(todo.id))}>
       <input
         class='edit'
         value={todo.title}
         onFocusOut={save}
         onKeyUp={doneEditing}
+        forwardRef={setFocus}
       />
-    </$>
+    </Show>
   </li>
 
 const TodoFooter = ({ store, clearCompleted }) =>
@@ -110,9 +114,9 @@ const TodoFooter = ({ store, clearCompleted }) =>
       <li><a href='#/active' classList={({selected: store.showMode === 'active'})}>Active</a></li>
       <li><a href='#/completed' classList={({selected: store.showMode === 'completed'})}>Completed</a></li>
     </ul>
-    <$ when={ store.completedCount > 0 }>
+    <Show when={(store.completedCount > 0)}>
       <button class='clear-completed' onClick={clearCompleted}>Clear completed</button>
-    </$>
+    </Show>
   </footer>
 
-createRoot(() => document.body.insertBefore(<TodoApp />, document.body.firstChild));
+render(TodoApp, document.getElementById('main'));

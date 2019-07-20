@@ -1,6 +1,6 @@
 {
   "name": "solid-todomvc",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Solid implementation of TodoMVC",
   "scripts": {
     "start": "rollup -w -c",
@@ -21,15 +21,15 @@
   },
   "private": true,
   "dependencies": {
-    "solid-js": "0.8.0",
-    "babel-plugin-jsx-dom-expressions": "0.10.0"
+    "solid-js": "0.9.0",
+    "babel-preset-solid": "0.1.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "rollup": "1.15.5",
-    "rollup-plugin-babel": "4.3.2",
-    "rollup-plugin-node-resolve": "5.0.2",
-    "rollup-plugin-terser": "5.0.0",
+    "@babel/core": "^7.5.5",
+    "rollup": "1.17.0",
+    "rollup-plugin-babel": "4.3.3",
+    "rollup-plugin-node-resolve": "5.2.0",
+    "rollup-plugin-terser": "5.1.1",
     "todomvc-app-css": "^2.2.0",
     "todomvc-common": "^1.0.5"
   }
