@@ -30,11 +30,12 @@ const TodoHeader = ({ addTodo }) =>
       class='new-todo'
       placeholder='What needs to be done?'
       onKeyUp={({target, keyCode}) => {
-        let title;
-        if (!(keyCode === ENTER_KEY && (title = target.value.trim()))) return;
-        addTodo({title});
-        target.value = '';
-      }}
+        const title = target.value.trim();
+        if (keyCode === ENTER_KEY && title) {
+          addTodo({title});
+          target.value = '';
+       }
+     }}
     />
   </header>
 
@@ -44,22 +45,23 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
       if (store.showMode === 'active') return todos.filter(todo => !todo.completed);
       else if (store.showMode === 'completed') return todos.filter(todo => todo.completed);
       else return todos
-    },
+   },
     isEditing = todoId => state.editingTodoId === todoId,
     setCurrent = todoId => setState('editingTodoId', todoId),
     save = ({target: {value}}, todoId) => {
-      let title;
-      if (!(state.editingTodoId === todoId && (title = value.trim()))) return;
-      editTodo({id: todoId, title});
-      setCurrent();
-    },
+      const title = value.trim();
+      if (state.editingTodoId === todoId && title) {
+        editTodo({id: todoId, title});
+        setCurrent();
+     }
+   },
     toggle = ({target: {checked}}, todoId) => editTodo({id: todoId, completed: checked}),
     edit = (e, todoId) => setCurrent(todoId),
     remove = (e, todoId) => removeTodo(todoId),
     doneEditing = (e, todoId) => {
       if (e.keyCode === ENTER_KEY) save(e, todoId);
       else if (e.keyCode === ESCAPE_KEY) setCurrent();
-    };
+   };
 
   return <section class='main'>
     <input
@@ -74,8 +76,8 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
       <For each={(filterList(store.todos))}
         transform={selectWhen(() => state.editingTodoId, 'editing')}
       >{
-        todo => <TodoItem {...{todo, isEditing, toggle, edit, remove, doneEditing, save}} />
-      }</For>
+          todo => <TodoItem {...{todo, isEditing, toggle, edit, remove, doneEditing, save}} />
+       }</For>
     </ul>
   </section>
 }
