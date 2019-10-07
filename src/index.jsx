@@ -45,7 +45,7 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
       if (store.showMode === 'active') return todos.filter(todo => !todo.completed);
       else if (store.showMode === 'completed') return todos.filter(todo => todo.completed);
       else return todos
-   },
+    },
     isEditing = todoId => state.editingTodoId === todoId,
     setCurrent = todoId => setState('editingTodoId', todoId),
     save = ({target: {value}}, todoId) => {
@@ -61,7 +61,7 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
     doneEditing = (e, todoId) => {
       if (e.keyCode === ENTER_KEY) save(e, todoId);
       else if (e.keyCode === ESCAPE_KEY) setCurrent();
-   };
+    };
 
   return <section class='main'>
     <input
