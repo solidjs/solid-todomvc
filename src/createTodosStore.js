@@ -28,29 +28,15 @@ export default function createTodosStore() {
     });
   });
 
-  return [
-    state,
-    {
-      addTodo: ({ title }) =>
-        setState(
-          [
-            "todos",
-            t => [{ title, id: state.counter, completed: false }, ...t]
-          ],
-          ["counter", c => c + 1]
-        ),
-      removeTodo: todoId =>
-        setState("todos", t => t.filter(item => item.id !== todoId)),
-      editTodo: todo =>
-        setState(
-          "todos",
-          state.todos.findIndex(item => item.id === todo.id),
-          todo
-        ),
-      clearCompleted: () =>
-        setState("todos", t => t.filter(todo => !todo.completed)),
-      toggleAll: completed =>
-        setState("todos", todo => todo.completed !== completed, { completed }),
+  return [state, {
+      addTodo: ({ title }) => setState(
+        ["todos", t => [{ title, id: state.counter, completed: false }, ...t]],
+        ["counter", c => c + 1]
+      ),
+      removeTodo: todoId => setState("todos", t => t.filter(item => item.id !== todoId)),
+      editTodo: todo => setState("todos", state.todos.findIndex(item => item.id === todo.id), todo),
+      clearCompleted: () => setState("todos", t => t.filter(todo => !todo.completed)),
+      toggleAll: completed => setState("todos", todo => todo.completed !== completed, { completed }),
       setVisibility: showMode => setState("showMode", showMode)
     }
   ];

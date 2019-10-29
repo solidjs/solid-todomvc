@@ -8,17 +8,14 @@ const ESCAPE_KEY = 27,
 const setFocus = el => Promise.resolve().then(() => el.focus());
 
 const TodoApp = () => {
-  const [
-      store,
-      {
-        addTodo,
-        toggleAll,
-        editTodo,
-        removeTodo,
-        clearCompleted,
-        setVisibility
-      }
-    ] = createTodosStore(),
+  const [store, {
+      addTodo,
+      toggleAll,
+      editTodo,
+      removeTodo,
+      clearCompleted,
+      setVisibility
+    }] = createTodosStore(),
     locationHandler = () => setVisibility(location.hash.slice(2) || "all");
 
   window.addEventListener("hashchange", locationHandler);
@@ -83,7 +80,7 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
       if (e.keyCode === ENTER_KEY) save(e, todoId);
       else if (e.keyCode === ESCAPE_KEY) setCurrent();
     },
-    applyClass = selectWhen(() => state.editingTodoId, "editing");
+    applyEditting = selectWhen(() => state.editingTodoId, "editing");
 
   return (
     <section class="main">
@@ -96,19 +93,17 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
       />
       <label for="toggle-all" />
       <ul class="todo-list">
-        <For each={filterList(store.todos)} transform={applyClass}>
-          {todo => (
-            <TodoItem
-              todo={todo}
-              isEditing={isEditing}
-              toggle={toggle}
-              edit={edit}
-              remove={remove}
-              doneEditing={doneEditing}
-              save={save}
-            />
-          )}
-        </For>
+        <For each={filterList(store.todos)} transform={applyEditting}>{ todo => (
+          <TodoItem
+            todo={todo}
+            isEditing={isEditing}
+            toggle={toggle}
+            edit={edit}
+            remove={remove}
+            doneEditing={doneEditing}
+            save={save}
+          />
+        )}</For>
       </ul>
     </section>
   );
@@ -122,32 +117,29 @@ const TodoItem = ({
   remove,
   save,
   doneEditing
-}) => {
-  const todoTitle = todo.title;
-  return (
-    <li class="todo" model={todo.id} classList={{ completed: todo.completed }}>
-      <div class="view">
-        <input
-          class="toggle"
-          type="checkbox"
-          checked={todo.completed}
-          onInput={toggle}
-        />
-        <label onDblClick={edit}>{todo.title}</label>
-        <button class="destroy" onClick={remove} />
-      </div>
-      <Show when={isEditing(todo.id)}>
-        <input
-          class="edit"
-          value={todoTitle}
-          onFocusOut={save}
-          onKeyUp={doneEditing}
-          forwardRef={setFocus}
-        />
-      </Show>
-    </li>
-  );
-};
+}) => (
+  <li class="todo" model={todo.id} classList={{ completed: todo.completed }}>
+    <div class="view">
+      <input
+        class="toggle"
+        type="checkbox"
+        checked={todo.completed}
+        onInput={toggle}
+      />
+      <label onDblClick={edit}>{todo.title}</label>
+      <button class="destroy" onClick={remove} />
+    </div>
+    <Show when={isEditing(todo.id)}>
+      <input
+        class="edit"
+        value={todo.title}
+        onFocusOut={save}
+        onKeyUp={doneEditing}
+        forwardRef={setFocus}
+      />
+    </Show>
+  </li>
+);
 
 const TodoFooter = ({ store, clearCompleted }) => (
   <footer class="footer">
@@ -156,27 +148,9 @@ const TodoFooter = ({ store, clearCompleted }) => (
       {store.remainingCount === 1 ? " item" : " items"} left
     </span>
     <ul class="filters">
-      <li>
-        <a href="#/" classList={{ selected: store.showMode === "all" }}>
-          All
-        </a>
-      </li>
-      <li>
-        <a
-          href="#/active"
-          classList={{ selected: store.showMode === "active" }}
-        >
-          Active
-        </a>
-      </li>
-      <li>
-        <a
-          href="#/completed"
-          classList={{ selected: store.showMode === "completed" }}
-        >
-          Completed
-        </a>
-      </li>
+      <li><a href="#/" classList={{ selected: store.showMode === "all" }}>All</a></li>
+      <li><a href="#/active" classList={{ selected: store.showMode === "active" }}>Active</a></li>
+      <li><a href="#/completed" classList={{ selected: store.showMode === "completed" }}>Completed</a></li>
     </ul>
     <Show when={store.completedCount > 0}>
       <button class="clear-completed" onClick={clearCompleted}>
