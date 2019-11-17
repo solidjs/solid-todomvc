@@ -29,10 +29,10 @@ export default function createTodosStore() {
   });
 
   return [state, {
-      addTodo: ({ title }) => setState(
-        ["todos", t => [{ title, id: state.counter, completed: false }, ...t]],
-        ["counter", c => c + 1]
-      ),
+      addTodo: ({ title }) => setState({
+        todos: [{ title, id: state.counter, completed: false }, ...state.todos],
+        counter: state.counter + 1
+      }),
       removeTodo: todoId => setState("todos", t => t.filter(item => item.id !== todoId)),
       editTodo: todo => setState("todos", state.todos.findIndex(item => item.id === todo.id), todo),
       clearCompleted: () => setState("todos", t => t.filter(todo => !todo.completed)),
