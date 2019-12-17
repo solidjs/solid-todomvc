@@ -1,5 +1,5 @@
 import { createState, onCleanup } from "solid-js";
-import { render, selectWhen } from "solid-js/dom";
+import { render, select } from "solid-js/dom";
 import createTodosStore from "./createTodosStore";
 
 const ESCAPE_KEY = 27,
@@ -79,8 +79,7 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
     doneEditing = (e, todoId) => {
       if (e.keyCode === ENTER_KEY) save(e, todoId);
       else if (e.keyCode === ESCAPE_KEY) setCurrent();
-    },
-    applyEditting = selectWhen(() => state.editingTodoId, "editing");
+    };
 
   return (
     <section class="main">
@@ -92,8 +91,8 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
         onInput={({ target: { checked } }) => toggleAll(checked)}
       />
       <label for="toggle-all" />
-      <ul class="todo-list">
-        <For each={filterList(store.todos)} transform={applyEditting}>{ todo => (
+      <ul class="todo-list" forwardRef={select(() => state.editingTodoId, "editing")}>
+        <For each={filterList(store.todos)}>{ todo => (
           <TodoItem
             todo={todo}
             isEditing={isEditing}
