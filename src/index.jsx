@@ -1,21 +1,24 @@
 import { createState, onCleanup } from "solid-js";
-import { render, select } from "solid-js/dom";
+import { render } from "solid-js/dom";
 import createTodosStore from "./createTodosStore";
 
 const ESCAPE_KEY = 27,
   ENTER_KEY = 13;
 
-const setFocus = el => Promise.resolve().then(() => el.focus());
+const setFocus = el => setTimeout(() => el.focus());
 
 const TodoApp = () => {
-  const [store, {
-      addTodo,
-      toggleAll,
-      editTodo,
-      removeTodo,
-      clearCompleted,
-      setVisibility
-    }] = createTodosStore(),
+  const [
+      store,
+      {
+        addTodo,
+        toggleAll,
+        editTodo,
+        removeTodo,
+        clearCompleted,
+        setVisibility
+      }
+    ] = createTodosStore(),
     locationHandler = () => setVisibility(location.hash.slice(2) || "all");
 
   window.addEventListener("hashchange", locationHandler);
@@ -55,7 +58,7 @@ const TodoHeader = ({ addTodo }) => (
 );
 
 const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
-  const [state, setState] = createState(),
+  const [state, setState] = createState({ editingTodoId: null }),
     filterList = todos => {
       if (store.showMode === "active")
         return todos.filter(todo => !todo.completed);
@@ -91,7 +94,7 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
         onInput={({ target: { checked } }) => toggleAll(checked)}
       />
       <label for="toggle-all" />
-      <ul class="todo-list" forwardRef={select(() => state.editingTodoId, "editing")}>
+      <ul class="todo-list">
         <For each={filterList(store.todos)}>{ todo => (
           <TodoItem
             todo={todo}
@@ -102,7 +105,7 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
             doneEditing={doneEditing}
             save={save}
           />
-        )}</For>
+          )}</For>
       </ul>
     </section>
   );
@@ -117,7 +120,11 @@ const TodoItem = ({
   save,
   doneEditing
 }) => (
-  <li class="todo" model={todo.id} classList={{ completed: todo.completed }}>
+  <li
+    class="todo"
+    model={todo.id}
+    classList={{ editing: isEditing(todo.id), completed: todo.completed }}
+  >
     <div class="view">
       <input
         class="toggle"
@@ -147,9 +154,27 @@ const TodoFooter = ({ store, clearCompleted }) => (
       {store.remainingCount === 1 ? " item" : " items"} left
     </span>
     <ul class="filters">
-      <li><a href="#/" classList={{ selected: store.showMode === "all" }}>All</a></li>
-      <li><a href="#/active" classList={{ selected: store.showMode === "active" }}>Active</a></li>
-      <li><a href="#/completed" classList={{ selected: store.showMode === "completed" }}>Completed</a></li>
+      <li>
+        <a href="#/" classList={{ selected: store.showMode === "all" }}>
+          All
+        </a>
+      </li>
+      <li>
+        <a
+          href="#/active"
+          classList={{ selected: store.showMode === "active" }}
+        >
+          Active
+        </a>
+      </li>
+      <li>
+        <a
+          href="#/completed"
+          classList={{ selected: store.showMode === "completed" }}
+        >
+          Completed
+        </a>
+      </li>
     </ul>
     <Show when={store.completedCount > 0}>
       <button class="clear-completed" onClick={clearCompleted}>
