@@ -151,7 +151,7 @@ const TodoFooter = ({ store, clearCompleted }) => (
   <footer class="footer">
     <span class="todo-count">
       <strong>{store.remainingCount}</strong>
-      {store.remainingCount === 1 ? " item" : " items"} left
+      {store.remainingCount === 1 ? " item " : " items "} left
     </span>
     <ul class="filters">
       <li>

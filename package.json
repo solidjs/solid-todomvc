@@ -1,6 +1,6 @@
 {
   "name": "solid-todomvc",
-  "version": "0.16.0",
+  "version": "0.16.2",
   "description": "Solid implementation of TodoMVC",
   "scripts": {
     "start": "rollup -w -c",
@@ -21,11 +21,11 @@
   },
   "private": true,
   "dependencies": {
-    "solid-js": "0.16.0"
+    "solid-js": "0.16.2"
   },
   "devDependencies": {
     "@babel/core": "^7.8.3",
-    "babel-preset-solid": "0.16.0",
+    "babel-preset-solid": "0.16.2",
     "rollup": "1.29.0",
     "rollup-plugin-babel": "4.3.3",
     "rollup-plugin-node-resolve": "5.2.0",
