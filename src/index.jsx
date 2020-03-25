@@ -10,14 +10,7 @@ const setFocus = el => setTimeout(() => el.focus());
 const TodoApp = () => {
   const [
       store,
-      {
-        addTodo,
-        toggleAll,
-        editTodo,
-        removeTodo,
-        clearCompleted,
-        setVisibility
-      }
+      { addTodo, toggleAll, editTodo, removeTodo, clearCompleted, setVisibility }
     ] = createTodosStore(),
     locationHandler = () => setVisibility(location.hash.slice(2) || "all");
 
@@ -28,12 +21,7 @@ const TodoApp = () => {
     <section class="todoapp">
       <TodoHeader addTodo={addTodo} />
       <Show when={store.todos.length > 0}>
-        <TodoList
-          store={store}
-          toggleAll={toggleAll}
-          editTodo={editTodo}
-          removeTodo={removeTodo}
-        />
+        <TodoList store={store} toggleAll={toggleAll} editTodo={editTodo} removeTodo={removeTodo} />
         <TodoFooter store={store} clearCompleted={clearCompleted} />
       </Show>
     </section>
@@ -60,26 +48,23 @@ const TodoHeader = ({ addTodo }) => (
 const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
   const [state, setState] = createState({ editingTodoId: null }),
     filterList = todos => {
-      if (store.showMode === "active")
-        return todos.filter(todo => !todo.completed);
-      else if (store.showMode === "completed")
-        return todos.filter(todo => todo.completed);
+      if (store.showMode === "active") return todos.filter(todo => !todo.completed);
+      else if (store.showMode === "completed") return todos.filter(todo => todo.completed);
       else return todos;
     },
     isEditing = todoId => state.editingTodoId === todoId,
     setCurrent = todoId => setState("editingTodoId", todoId),
-    save = ({ target: { value } }, todoId) => {
+    save = (todoId, { target: { value } }) => {
       const title = value.trim();
       if (state.editingTodoId === todoId && title) {
         editTodo({ id: todoId, title });
         setCurrent();
       }
     },
-    toggle = ({ target: { checked } }, todoId) =>
-      editTodo({ id: todoId, completed: checked }),
-    edit = (e, todoId) => setCurrent(todoId),
-    remove = (e, todoId) => removeTodo(todoId),
-    doneEditing = (e, todoId) => {
+    toggle = (todoId, { target: { checked } }) => editTodo({ id: todoId, completed: checked }),
+    edit = todoId => setCurrent(todoId),
+    remove = todoId => removeTodo(todoId),
+    doneEditing = todoId => {
       if (e.keyCode === ENTER_KEY) save(e, todoId);
       else if (e.keyCode === ESCAPE_KEY) setCurrent();
     };
@@ -95,52 +80,37 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
       />
       <label for="toggle-all" />
       <ul class="todo-list">
-        <For each={filterList(store.todos)}>{ todo => (
-          <TodoItem
-            todo={todo}
-            isEditing={isEditing}
-            toggle={toggle}
-            edit={edit}
-            remove={remove}
-            doneEditing={doneEditing}
-            save={save}
-          />
-          )}</For>
+        <For each={filterList(store.todos)}>
+          {todo => (
+            <TodoItem
+              todo={todo}
+              isEditing={isEditing}
+              toggle={toggle}
+              edit={edit}
+              remove={remove}
+              doneEditing={doneEditing}
+              save={save}
+            />
+          )}
+        </For>
       </ul>
     </section>
   );
 };
 
-const TodoItem = ({
-  todo,
-  isEditing,
-  toggle,
-  edit,
-  remove,
-  save,
-  doneEditing
-}) => (
-  <li
-    class="todo"
-    model={todo.id}
-    classList={{ editing: isEditing(todo.id), completed: todo.completed }}
-  >
+const TodoItem = ({ todo, isEditing, toggle, edit, remove, save, doneEditing }) => (
+  <li class="todo" classList={{ editing: isEditing(todo.id), completed: todo.completed }}>
     <div class="view">
-      <input
-        class="toggle"
-        type="checkbox"
-        checked={todo.completed}
-        onInput={toggle}
-      />
-      <label onDblClick={edit}>{todo.title}</label>
-      <button class="destroy" onClick={remove} />
+      <input class="toggle" type="checkbox" checked={todo.completed} onInput={[toggle, todo.id]} />
+      <label onDblClick={[edit, todo.id]}>{todo.title}</label>
+      <button class="destroy" onClick={[remove, todo.id]} />
     </div>
     <Show when={isEditing(todo.id)}>
       <input
         class="edit"
         value={todo.title}
-        onFocusOut={save}
-        onKeyUp={doneEditing}
+        onFocusOut={[save, todo.id]}
+        onKeyUp={[doneEditing, todo.id]}
         forwardRef={setFocus}
       />
     </Show>
@@ -160,18 +130,12 @@ const TodoFooter = ({ store, clearCompleted }) => (
         </a>
       </li>
       <li>
-        <a
-          href="#/active"
-          classList={{ selected: store.showMode === "active" }}
-        >
+        <a href="#/active" classList={{ selected: store.showMode === "active" }}>
           Active
         </a>
       </li>
       <li>
-        <a
-          href="#/completed"
-          classList={{ selected: store.showMode === "completed" }}
-        >
+        <a href="#/completed" classList={{ selected: store.showMode === "completed" }}>
           Completed
         </a>
       </li>

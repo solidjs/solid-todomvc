@@ -8,9 +8,7 @@ function createLocalState(value) {
     [state, setState] = createState(stored ? JSON.parse(stored) : value);
 
   // JSON.stringify creates deps on every iterable field
-  createEffect(() =>
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state))
-  );
+  createEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state)));
   return [state, setState];
 }
 
