@@ -21,7 +21,7 @@
   },
   "private": true,
   "dependencies": {
-    "solid-js": "0.17.0"
+    "solid-js": "0.17.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0",
