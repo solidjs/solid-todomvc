@@ -111,7 +111,7 @@ const TodoItem = ({ todo, isEditing, toggle, edit, remove, save, doneEditing }) 
         value={todo.title}
         onFocusOut={[save, todo.id]}
         onKeyUp={[doneEditing, todo.id]}
-        forwardRef={setFocus}
+        ref={setFocus}
       />
     </Show>
   </li>
