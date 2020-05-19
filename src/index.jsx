@@ -34,7 +34,7 @@ const TodoHeader = ({ addTodo }) => (
     <input
       class="new-todo"
       placeholder="What needs to be done?"
-      onKeyUp={({ target, keyCode }) => {
+      onKeyDown={({ target, keyCode }) => {
         const title = target.value.trim();
         if (keyCode === ENTER_KEY && title) {
           addTodo({ title });
