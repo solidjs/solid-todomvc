@@ -1,6 +1,6 @@
 {
   "name": "solid-todomvc",
-  "version": "0.18.0",
+  "version": "0.18.14",
   "description": "Solid implementation of TodoMVC",
   "scripts": {
     "start": "rollup -w -c",
@@ -21,7 +21,7 @@
   },
   "private": true,
   "dependencies": {
-    "solid-js": "0.18.0"
+    "solid-js": "0.18.14"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",
