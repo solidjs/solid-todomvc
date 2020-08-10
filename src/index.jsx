@@ -64,8 +64,8 @@ const TodoList = ({ store, editTodo, removeTodo, toggleAll }) => {
     toggle = (todoId, { target: { checked } }) => editTodo({ id: todoId, completed: checked }),
     edit = todoId => setCurrent(todoId),
     remove = todoId => removeTodo(todoId),
-    doneEditing = todoId => {
-      if (e.keyCode === ENTER_KEY) save(e, todoId);
+    doneEditing = (todoId, e) => {
+      if (e.keyCode === ENTER_KEY) save(todoId, e);
       else if (e.keyCode === ESCAPE_KEY) setCurrent();
     };
 
