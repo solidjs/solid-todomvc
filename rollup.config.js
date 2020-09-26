@@ -4,7 +4,8 @@ import { terser } from 'rollup-plugin-terser';
 
 const plugins = [
 	babel({
-		exclude: 'node_modules/**',
+    exclude: 'node_modules/**',
+    babelHelpers: "bundled",
 		presets: ["solid"]
 	}),
 	resolve({ extensions: ['.js', '.jsx'] })

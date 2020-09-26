@@ -1,4 +1,4 @@
-import { createState, createEffect } from "solid-js";
+import { createState, createComputed, createEffect } from "solid-js";
 
 const LOCAL_STORAGE_KEY = "todos-solid";
 
@@ -18,7 +18,7 @@ export default function createTodosStore() {
     todos: [],
     showMode: "all"
   });
-  createEffect(() => {
+  createComputed(() => {
     const completedCount = state.todos.filter(todo => todo.completed).length;
     setState({
       completedCount,
