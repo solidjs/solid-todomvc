@@ -1,5 +1,5 @@
 import { createState, createMemo, createEffect, onCleanup } from "solid-js";
-import { render } from "solid-js/dom";
+import { render } from "solid-js/web";
 
 const ESCAPE_KEY = 27;
 const ENTER_KEY = 13;
@@ -97,7 +97,7 @@ const TodoApp = () => {
                       value={todo.title}
                       onFocusOut={[save, todo.id]}
                       onKeyUp={[doneEditing, todo.id]}
-                      ref={setFocus}
+                      use:setFocus
                     />
                   </Show>
                 </li>
@@ -112,9 +112,9 @@ const TodoApp = () => {
             {remainingCount() === 1 ? " item " : " items "} left
           </span>
           <ul class="filters">
-            <li><a href="#/" class={state.showMode === "all" ? "selected" : ""}>All</a></li>
-            <li><a href="#/active" class={state.showMode === "active" ? "selected" : ""}>Active</a></li>
-            <li><a href="#/completed" class={state.showMode === "completed" ? "selected" : ""}>Completed</a></li>
+            <li><a href="#/" classList={{selected: state.showMode === "all"}}>All</a></li>
+            <li><a href="#/active" classList={{selected: state.showMode === "active"}}>Active</a></li>
+            <li><a href="#/completed" classList={{selected: state.showMode === "completed"}}>Completed</a></li>
           </ul>
           <Show when={remainingCount() !== state.todos.length}>
             <button class="clear-completed" onClick={clearCompleted}>
