@@ -1,6 +1,6 @@
 {
   "name": "solid-todomvc",
-  "version": "0.26.0",
+  "version": "1.0.0",
   "description": "Solid implementation of TodoMVC",
   "scripts": {
     "start": "rollup -w -c",
@@ -14,21 +14,21 @@
   ],
   "author": "Ryan Carniato",
   "license": "MIT",
-  "homepage": "https://github.com/ryansolid/solid-todomvc",
+  "homepage": "https://github.com/solidjs/solid-todomvc",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ryansolid/solid-todomvc.git"
+    "url": "https://github.com/solidjs/solid-todomvc.git"
   },
   "private": true,
   "dependencies": {
-    "solid-js": "0.26.0"
+    "solid-js": "1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.13.5",
     "@rollup/plugin-babel": "5.3.0",
     "@rollup/plugin-node-resolve": "11.2.1",
-    "babel-preset-solid": "0.26.0",
-    "rollup": "2.45.2",
+    "babel-preset-solid": "1.0.0",
+    "rollup": "2.52.3",
     "rollup-plugin-terser": "7.0.0",
     "todomvc-app-css": "^2.2.0",
     "todomvc-common": "^1.0.5"

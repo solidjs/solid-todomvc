@@ -1,4 +1,5 @@
-import { createState, createMemo, createEffect, onCleanup } from "solid-js";
+import { createMemo, createEffect, onCleanup } from "solid-js";
+import { createStore } from "solid-js/store";
 import { render } from "solid-js/web";
 
 const ESCAPE_KEY = 27;
@@ -7,10 +8,10 @@ const ENTER_KEY = 13;
 const setFocus = (el) => setTimeout(() => el.focus());
 
 const LOCAL_STORAGE_KEY = "todos-solid";
-function createLocalState(value) {
+function createLocalStore(value) {
   // load stored todos on init
   const stored = localStorage.getItem(LOCAL_STORAGE_KEY),
-    [state, setState] = createState(stored ? JSON.parse(stored) : value);
+    [state, setState] = createStore(stored ? JSON.parse(stored) : value);
 
   // JSON.stringify creates deps on every iterable field
   createEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state)));
@@ -18,7 +19,7 @@ function createLocalState(value) {
 }
 
 const TodoApp = () => {
-  const [state, setState] = createLocalState({
+  const [state, setState] = createLocalStore({
       counter: 1,
       todos: [],
       showMode: "all",
@@ -31,7 +32,7 @@ const TodoApp = () => {
       else return todos;
     },
     removeTodo = (todoId) => setState("todos", (t) => t.filter((item) => item.id !== todoId)),
-    editTodo = (todo) => setState("todos", state.todos.findIndex((item) => item.id === todo.id), todo),
+    editTodo = (todo) => setState("todos", (item) => item.id === todo.id, todo),
     clearCompleted = () => setState("todos", (t) => t.filter((todo) => !todo.completed)),
     toggleAll = (completed) => setState("todos", (todo) => todo.completed !== completed, { completed }),
     setEditing = (todoId) => setState("editingTodoId", todoId),
