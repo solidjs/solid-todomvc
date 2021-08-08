@@ -20,6 +20,10 @@
     "url": "https://github.com/solidjs/solid-todomvc.git"
   },
   "private": true,
+  "engines": {
+    "node": ">=16.6.1",
+    "npm": ">=7.20.1"
+  },
   "dependencies": {
     "solid-js": "1.0.0"
   },
