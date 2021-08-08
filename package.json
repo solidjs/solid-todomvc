@@ -35,6 +35,8 @@
     "rollup": "2.52.3",
     "rollup-plugin-terser": "7.0.0",
     "todomvc-app-css": "^2.2.0",
-    "todomvc-common": "^1.0.5"
+    "todomvc-common": "^1.0.5",
+    "ts-migrate": "^0.1.21",
+    "typescript": "^4.3.5"
   }
 }
