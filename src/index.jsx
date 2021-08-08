@@ -10,56 +10,69 @@ const setFocus = (el) => setTimeout(() => el.focus());
 const LOCAL_STORAGE_KEY = "todos-solid";
 function createLocalStore(value) {
   // load stored todos on init
-  const stored = localStorage.getItem(LOCAL_STORAGE_KEY),
-    [state, setState] = createStore(stored ? JSON.parse(stored) : value);
+  const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+  const [state, setState] = createStore(stored ? JSON.parse(stored) : value);
 
   // JSON.stringify creates deps on every iterable field
-  createEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state)));
+  createEffect(() =>
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state))
+  );
   return [state, setState];
 }
 
 const TodoApp = () => {
   const [state, setState] = createLocalStore({
-      counter: 1,
-      todos: [],
-      showMode: "all",
-      editingTodoId: null,
-    }),
-    remainingCount = createMemo(() => state.todos.length - state.todos.filter((todo) => todo.completed).length),
-    filterList = (todos) => {
-      if (state.showMode === "active") return todos.filter((todo) => !todo.completed);
-      else if (state.showMode === "completed") return todos.filter((todo) => todo.completed);
-      else return todos;
-    },
-    removeTodo = (todoId) => setState("todos", (t) => t.filter((item) => item.id !== todoId)),
-    editTodo = (todo) => setState("todos", (item) => item.id === todo.id, todo),
-    clearCompleted = () => setState("todos", (t) => t.filter((todo) => !todo.completed)),
-    toggleAll = (completed) => setState("todos", (todo) => todo.completed !== completed, { completed }),
-    setEditing = (todoId) => setState("editingTodoId", todoId),
-    addTodo = ({ target, keyCode }) => {
-      const title = target.value.trim();
-      if (keyCode === ENTER_KEY && title) {
-        setState({
-          todos: [{ title, id: state.counter, completed: false }, ...state.todos],
-          counter: state.counter + 1
-        });
-        target.value = "";
-      }
-    },
-    save = (todoId, { target: { value } }) => {
-      const title = value.trim();
-      if (state.editingTodoId === todoId && title) {
-        editTodo({ id: todoId, title });
-        setEditing();
-      }
-    },
-    toggle = (todoId, { target: { checked } }) => editTodo({ id: todoId, completed: checked }),
-    doneEditing = (todoId, e) => {
-      if (e.keyCode === ENTER_KEY) save(todoId, e);
-      else if (e.keyCode === ESCAPE_KEY) setEditing();
-    };
+    counter: 1,
+    todos: [],
+    showMode: "all",
+    editingTodoId: null,
+  });
+  const remainingCount = createMemo(
+    () =>
+      state.todos.length - state.todos.filter((todo) => todo.completed).length
+  );
+  const filterList = (todos) => {
+    if (state.showMode === "active")
+      return todos.filter((todo) => !todo.completed);
+    else if (state.showMode === "completed")
+      return todos.filter((todo) => todo.completed);
+    else return todos;
+  };
+  const removeTodo = (todoId) =>
+    setState("todos", (t) => t.filter((item) => item.id !== todoId));
+  const editTodo = (todo) =>
+    setState("todos", (item) => item.id === todo.id, todo);
+  const clearCompleted = () =>
+    setState("todos", (t) => t.filter((todo) => !todo.completed));
+  const toggleAll = (completed) =>
+    setState("todos", (todo) => todo.completed !== completed, { completed });
+  const setEditing = (todoId) => setState("editingTodoId", todoId);
+  const addTodo = ({ target, keyCode }) => {
+    const title = target.value.trim();
+    if (keyCode === ENTER_KEY && title) {
+      setState({
+        todos: [{ title, id: state.counter, completed: false }, ...state.todos],
+        counter: state.counter + 1,
+      });
+      target.value = "";
+    }
+  };
+  const save = (todoId, { target: { value } }) => {
+    const title = value.trim();
+    if (state.editingTodoId === todoId && title) {
+      editTodo({ id: todoId, title });
+      setEditing();
+    }
+  };
+  const toggle = (todoId, { target: { checked } }) =>
+    editTodo({ id: todoId, completed: checked });
+  const doneEditing = (todoId, e) => {
+    if (e.keyCode === ENTER_KEY) save(todoId, e);
+    else if (e.keyCode === ESCAPE_KEY) setEditing();
+  };
 
-  const locationHandler = () => setState("showMode", location.hash.slice(2) || "all");
+  const locationHandler = () =>
+    setState("showMode", location.hash.slice(2) || "all");
   window.addEventListener("hashchange", locationHandler);
   onCleanup(() => window.removeEventListener("hashchange", locationHandler));
 
