@@ -1,11 +1,12 @@
 import { createMemo, createEffect, onCleanup } from "solid-js";
 import { createStore } from "solid-js/store";
 import { render } from "solid-js/web";
+import type { Component } from "solid-js";
 
 const ESCAPE_KEY = 27;
 const ENTER_KEY = 13;
 
-const setFocus = (el) => setTimeout(() => el.focus());
+// const setFocus = (el) => setTimeout(() => el.focus());
 
 const LOCAL_STORAGE_KEY = "todos-solid";
 function createLocalStore(value) {
@@ -14,13 +15,11 @@ function createLocalStore(value) {
   const [state, setState] = createStore(stored ? JSON.parse(stored) : value);
 
   // JSON.stringify creates deps on every iterable field
-  createEffect(() =>
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state))
-  );
+  createEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state)));
   return [state, setState];
 }
 
-const TodoApp = () => {
+const TodoApp: Component = () => {
   const [state, setState] = createLocalStore({
     counter: 1,
     todos: [],
@@ -28,22 +27,16 @@ const TodoApp = () => {
     editingTodoId: null,
   });
   const remainingCount = createMemo(
-    () =>
-      state.todos.length - state.todos.filter((todo) => todo.completed).length
+    () => state.todos.length - state.todos.filter((todo) => todo.completed).length
   );
   const filterList = (todos) => {
-    if (state.showMode === "active")
-      return todos.filter((todo) => !todo.completed);
-    else if (state.showMode === "completed")
-      return todos.filter((todo) => todo.completed);
+    if (state.showMode === "active") return todos.filter((todo) => !todo.completed);
+    else if (state.showMode === "completed") return todos.filter((todo) => todo.completed);
     else return todos;
   };
-  const removeTodo = (todoId) =>
-    setState("todos", (t) => t.filter((item) => item.id !== todoId));
-  const editTodo = (todo) =>
-    setState("todos", (item) => item.id === todo.id, todo);
-  const clearCompleted = () =>
-    setState("todos", (t) => t.filter((todo) => !todo.completed));
+  const removeTodo = (todoId) => setState("todos", (t) => t.filter((item) => item.id !== todoId));
+  const editTodo = (todo) => setState("todos", (item) => item.id === todo.id, todo);
+  const clearCompleted = () => setState("todos", (t) => t.filter((todo) => !todo.completed));
   const toggleAll = (completed) =>
     setState("todos", (todo) => todo.completed !== completed, { completed });
   const setEditing = (todoId) => setState("editingTodoId", todoId);
@@ -64,15 +57,13 @@ const TodoApp = () => {
       setEditing();
     }
   };
-  const toggle = (todoId, { target: { checked } }) =>
-    editTodo({ id: todoId, completed: checked });
+  const toggle = (todoId, { target: { checked } }) => editTodo({ id: todoId, completed: checked });
   const doneEditing = (todoId, e) => {
     if (e.keyCode === ENTER_KEY) save(todoId, e);
     else if (e.keyCode === ESCAPE_KEY) setEditing();
   };
 
-  const locationHandler = () =>
-    setState("showMode", location.hash.slice(2) || "all");
+  const locationHandler = () => setState("showMode", location.hash.slice(2) || "all");
   window.addEventListener("hashchange", locationHandler);
   onCleanup(() => window.removeEventListener("hashchange", locationHandler));
 
@@ -98,10 +89,18 @@ const TodoApp = () => {
               {(todo) => (
                 <li
                   class="todo"
-                  classList={{ editing: state.editingTodoId === todo.id, completed: todo.completed }}
+                  classList={{
+                    editing: state.editingTodoId === todo.id,
+                    completed: todo.completed,
+                  }}
                 >
                   <div class="view">
-                    <input class="toggle" type="checkbox" checked={todo.completed} onInput={[toggle, todo.id]}/>
+                    <input
+                      class="toggle"
+                      type="checkbox"
+                      checked={todo.completed}
+                      onInput={[toggle, todo.id]}
+                    />
                     <label onDblClick={[setEditing, todo.id]}>{todo.title}</label>
                     <button class="destroy" onClick={[removeTodo, todo.id]} />
                   </div>
@@ -122,13 +121,24 @@ const TodoApp = () => {
 
         <footer class="footer">
           <span class="todo-count">
-            <strong>{remainingCount()}</strong>{" "}
-            {remainingCount() === 1 ? " item " : " items "} left
+            <strong>{remainingCount()}</strong> {remainingCount() === 1 ? " item " : " items "} left
           </span>
           <ul class="filters">
-            <li><a href="#/" classList={{selected: state.showMode === "all"}}>All</a></li>
-            <li><a href="#/active" classList={{selected: state.showMode === "active"}}>Active</a></li>
-            <li><a href="#/completed" classList={{selected: state.showMode === "completed"}}>Completed</a></li>
+            <li>
+              <a href="#/" classList={{ selected: state.showMode === "all" }}>
+                All
+              </a>
+            </li>
+            <li>
+              <a href="#/active" classList={{ selected: state.showMode === "active" }}>
+                Active
+              </a>
+            </li>
+            <li>
+              <a href="#/completed" classList={{ selected: state.showMode === "completed" }}>
+                Completed
+              </a>
+            </li>
           </ul>
           <Show when={remainingCount() !== state.todos.length}>
             <button class="clear-completed" onClick={clearCompleted}>

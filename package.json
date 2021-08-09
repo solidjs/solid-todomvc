@@ -1,10 +1,12 @@
 {
   "name": "solid-todomvc",
-  "version": "1.0.0",
+  "version": "1.0.7",
   "description": "Solid implementation of TodoMVC",
   "scripts": {
-    "start": "rollup -w -c",
-    "build": "rollup -c --environment production"
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
   },
   "keywords": [
     "solid",
@@ -28,16 +30,11 @@
     "solid-js": "^1.0.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.5",
-    "@rollup/plugin-babel": "5.3.0",
-    "@rollup/plugin-node-resolve": "11.2.1",
-    "babel-preset-solid": "1.0.0",
     "prettier": "^2.3.2",
-    "rollup": "2.52.3",
-    "rollup-plugin-terser": "7.0.0",
     "todomvc-app-css": "^2.2.0",
     "todomvc-common": "^1.0.5",
-    "ts-migrate": "^0.1.21",
-    "typescript": "^4.3.5"
+    "typescript": "^4.3.5",
+    "vite": "^2.4.4",
+    "vite-plugin-solid": "^2.0.1"
   }
 }
