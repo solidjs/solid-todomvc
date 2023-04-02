@@ -1,14 +1,15 @@
 import resolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
-import { terser } from 'rollup-plugin-terser';
+import terser from '@rollup/plugin-terser';
 
 const plugins = [
 	babel({
+		extensions: [".js", ".ts", ".tsx"],
     exclude: 'node_modules/**',
     babelHelpers: "bundled",
-		presets: ["solid"]
+		presets: ["solid", "@babel/preset-typescript"],
 	}),
-	resolve({ extensions: ['.js', '.jsx'] })
+	resolve({ extensions: ['.js', '.ts', '.tsx'] })
 ];
 
 if (process.env.production) {
@@ -16,10 +17,13 @@ if (process.env.production) {
 }
 
 export default {
-	input: 'src/index.jsx',
+	input: 'src/index.tsx',
 	output: {
 		file: 'dist/bundle.js',
 		format: 'iife'
+	},
+	treeshake: {
+		tryCatchDeoptimization: false
 	},
 	plugins
 };

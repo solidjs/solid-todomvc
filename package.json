@@ -24,17 +24,21 @@
     "node": ">=16.6.1",
     "npm": ">=7.20.1"
   },
+  "type": "module",
   "dependencies": {
-    "solid-js": "1.0.0"
+    "solid-js": "1.7.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.13.5",
-    "@rollup/plugin-babel": "5.3.0",
-    "@rollup/plugin-node-resolve": "11.2.1",
-    "babel-preset-solid": "1.0.0",
-    "rollup": "2.52.3",
-    "rollup-plugin-terser": "7.0.0",
+    "@babel/core": "^7.21.3",
+    "@babel/preset-typescript": "7.21.0",
+    "@rollup/plugin-babel": "6.0.3",
+    "@rollup/plugin-node-resolve": "15.0.1",
+    "@rollup/plugin-terser": "0.4.0",
+    "@types/node": "^18.15.5",
+    "babel-preset-solid": "1.7.1",
+    "rollup": "3.20.0",
     "todomvc-app-css": "^2.2.0",
-    "todomvc-common": "^1.0.5"
+    "todomvc-common": "^1.0.5",
+    "typescript": "5.0.2"
   }
 }

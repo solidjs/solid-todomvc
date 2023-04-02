@@ -1,65 +1,91 @@
-import { createMemo, createEffect, onCleanup } from "solid-js";
+import { createMemo, createEffect, onCleanup, Show, For, type JSX } from "solid-js";
 import { createStore } from "solid-js/store";
 import { render } from "solid-js/web";
+
+type Todo = {
+  id: number;
+  title: string;
+  completed: boolean;
+};
+
+type Filter = "all" | "active" | "completed"
+
+type TodoStore = {
+  counter: number;
+  todos: Todo[];
+  showMode: Filter;
+  editingTodoId: number | undefined;
+};
+
+declare module "solid-js" {
+  namespace JSX {
+    interface Directives {
+      setFocus: boolean;
+    }
+  }
+}
 
 const ESCAPE_KEY = 27;
 const ENTER_KEY = 13;
 
-const setFocus = (el) => setTimeout(() => el.focus());
+const setFocus = (el: HTMLElement) => setTimeout(() => el.focus());
 
 const LOCAL_STORAGE_KEY = "todos-solid";
-function createLocalStore(value) {
+function createLocalStore<T extends object>(value: T) {
   // load stored todos on init
   const stored = localStorage.getItem(LOCAL_STORAGE_KEY),
-    [state, setState] = createStore(stored ? JSON.parse(stored) : value);
+    [state, setState] = createStore<T>(stored ? JSON.parse(stored) : value);
 
   // JSON.stringify creates deps on every iterable field
   createEffect(() => localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(state)));
-  return [state, setState];
+  return [state, setState] as const;
 }
 
 const TodoApp = () => {
-  const [state, setState] = createLocalStore({
+  const [state, setState] = createLocalStore<TodoStore>({
       counter: 1,
       todos: [],
       showMode: "all",
-      editingTodoId: null,
+      editingTodoId: undefined
     }),
-    remainingCount = createMemo(() => state.todos.length - state.todos.filter((todo) => todo.completed).length),
-    filterList = (todos) => {
+    remainingCount = createMemo(
+      () => state.todos.length - state.todos.filter((todo) => todo.completed).length
+    ),
+    filterList = (todos: Todo[]) => {
       if (state.showMode === "active") return todos.filter((todo) => !todo.completed);
       else if (state.showMode === "completed") return todos.filter((todo) => todo.completed);
       else return todos;
     },
-    removeTodo = (todoId) => setState("todos", (t) => t.filter((item) => item.id !== todoId)),
-    editTodo = (todo) => setState("todos", (item) => item.id === todo.id, todo),
+    removeTodo = (todoId: number) => setState("todos", (t) => t.filter((item) => item.id !== todoId)),
+    editTodo = (todo: Partial<Todo>) => setState("todos", (item) => item.id === todo.id, todo),
     clearCompleted = () => setState("todos", (t) => t.filter((todo) => !todo.completed)),
-    toggleAll = (completed) => setState("todos", (todo) => todo.completed !== completed, { completed }),
-    setEditing = (todoId) => setState("editingTodoId", todoId),
-    addTodo = ({ target, keyCode }) => {
-      const title = target.value.trim();
+    toggleAll = (completed: boolean) =>
+      setState("todos", (todo) => todo.completed !== completed, { completed }),
+    setEditing = (todoId?: number) => setState("editingTodoId", todoId),
+    addTodo = ({ target, keyCode }: KeyboardEvent) => {
+      const title = (target as HTMLInputElement).value.trim();
       if (keyCode === ENTER_KEY && title) {
         setState({
           todos: [{ title, id: state.counter, completed: false }, ...state.todos],
           counter: state.counter + 1
         });
-        target.value = "";
+        (target as HTMLInputElement).value = "";
       }
     },
-    save = (todoId, { target: { value } }) => {
+    save = (todoId: number, { target: { value }}: { target: HTMLInputElement }) => {
       const title = value.trim();
       if (state.editingTodoId === todoId && title) {
         editTodo({ id: todoId, title });
         setEditing();
       }
     },
-    toggle = (todoId, { target: { checked } }) => editTodo({ id: todoId, completed: checked }),
-    doneEditing = (todoId, e) => {
-      if (e.keyCode === ENTER_KEY) save(todoId, e);
+    toggle = (todoId: number, { target: { checked } }: { target: HTMLInputElement }) => editTodo({ id: todoId, completed: checked }),
+    doneEditing = (todoId: number, e: KeyboardEvent) => {
+      if (e.keyCode === ENTER_KEY) save(todoId, e as any);
       else if (e.keyCode === ESCAPE_KEY) setEditing();
     };
 
-  const locationHandler = () => setState("showMode", location.hash.slice(2) || "all");
+  const locationHandler = () => setState("showMode", location.hash.slice(2) as Filter || "all");
   window.addEventListener("hashchange", locationHandler);
   onCleanup(() => window.removeEventListener("hashchange", locationHandler));
 
@@ -128,4 +154,4 @@ const TodoApp = () => {
   );
 };
 
-render(TodoApp, document.getElementById("main"));
+render(TodoApp, document.getElementById("main")!);
